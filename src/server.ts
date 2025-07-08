@@ -27,6 +27,14 @@ const startServer = async () => {
 
 startServer()
 
+
+
+/**
+  * unhandled rejection error
+  * uncaught rejection  error 
+  * signal termination SIGTERM 
+  */
+
 // unhandledRejection  error
 process.on("unhandledRejection", (err)=>{
     console.log("Unhandled Rejection! Shutting down the server...", err);
