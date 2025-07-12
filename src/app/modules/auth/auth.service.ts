@@ -29,13 +29,22 @@ const isUserExist = await User.findOne({email})
     //     expiresIn: '30d'
     // })
     const accessToken = generateToken(jwtPayload, envVars.JWT_ACCESS_SECRET, envVars.JWT_ACCESS_EXPIRE)
+
+    const refreshToken = generateToken(jwtPayload, envVars.JWT_REFRESH_SECRET, envVars.JWT_REFRESH_EXPIRES)
+
+    // delete isUserExist.password;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {password : PASS, ...rest} = isUserExist.toObject()
     return {
-        accessToken
+        accessToken,
+        refreshToken,
+        user: rest
         // email: isUserExist.email
     }
 }
 
 
 export const AuthServices ={
-    credentialsLogin
+    credentialsLogin,
+    
 }
