@@ -16,12 +16,12 @@ const credentialsLogin = catchAsync(async (req:Request, res:Response, next:NextF
         //     secure: false
         // })
 
+        // res.cookie("refreshToken", loginInfo.refreshToken, {
+        //     httpOnly: true,
+        //     secure: false
+        // })
         setAuthCookie(res, loginInfo)
         
-        res.cookie("refreshToken", loginInfo.refreshToken, {
-            httpOnly: true,
-            secure: false
-        })
 
         sendResponse(res, {
             success: true,
@@ -37,20 +37,45 @@ const getNewAccessToken = catchAsync(async (req:Request, res:Response, next:Next
             throw new AppError(httpStatus.BAD_REQUEST, "No refresh token recieved from cookies")
         }
         const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string)
-        res.cookie("accessToken", tokenInfo.accessToken, {
-            httpOnly: true,
-            secure: false
-        })
+        // res.cookie("accessToken", tokenInfo.accessToken, {
+        //     httpOnly: true,
+        //     secure: false
+        // })
+
+        setAuthCookie(res, tokenInfo)
         sendResponse(res, {
             success: true,
             statusCode: httpStatus.CREATED,
-            message: "User Logged In Successfully",
+            message: "New Access Token Retrived  Successfully",
             data: tokenInfo
+        })
+})
+const logout = catchAsync(async (req:Request, res:Response, next:NextFunction) => {
+
+        res.clearCookie("accessToken",  {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        })
+        res.clearCookie("refreshToken",  {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        })
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.CREATED,
+            message: "User Logged Out Successfully",
+            data: null
         })
 })
 
 
+
+
 export const AuthControllers ={
     credentialsLogin,
-    getNewAccessToken
+    getNewAccessToken,
+    logout,
 }
