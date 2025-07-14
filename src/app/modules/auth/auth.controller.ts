@@ -9,11 +9,13 @@ import { setAuthCookie } from "../../utils/setCookies"
 import { createUserToken } from "../../utils/userTokens"
 import { envVars } from "../../config/env"
 import { JwtPayload } from "jsonwebtoken"
+import passport from "passport"
 
 const credentialsLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const loginInfo = await AuthServices.credentialsLogin(req.body)
+    // const loginInfo = await AuthServices.credentialsLogin(req.body)
 
+    passport.authenticate("credential")(req, res, next)
     // res.cookie("accessToken", loginInfo.accessToken, {
     //     httpOnly: true,
     //     secure: false
@@ -23,15 +25,15 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
     //     httpOnly: true,
     //     secure: false
     // })
-    setAuthCookie(res, loginInfo)
+    // setAuthCookie(res, loginInfo)
 
 
-    sendResponse(res, {
-        success: true,
-        statusCode: httpStatus.CREATED,
-        message: "User Logged In Successfully",
-        data: loginInfo
-    })
+    // sendResponse(res, {
+    //     success: true,
+    //     statusCode: httpStatus.CREATED,
+    //     message: "User Logged In Successfully",
+    //     data: loginInfo
+    // })
 })
 const getNewAccessToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken
