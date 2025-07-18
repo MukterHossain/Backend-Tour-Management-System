@@ -94,19 +94,28 @@ const createTour = async (payload: ITour) => {
 
 
 const getAllTours = async (query: Record<string, string>) => {
-    const queryBuilder = new QueryBuilder(Tour.find(), query)
-    const tours = await queryBuilder.search(tourSearchableFields).filter().sort().fields().paginate()
-    // const meta = await queryBuilder.getMeta()
-    const [data, meta] = await Promise.all([
-        tours.build(),
-        queryBuilder.getMeta()
-    ])
-
+    // const queryBuilder = new QueryBuilder(Tour.find(), query)
+    const tours = await Tour.find({})
+    const totalTours = await Tour.countDocuments()
+    // const tours = await queryBuilder.search(tourSearchableFields).filter().sort().fields().paginate()
+    // // const meta = await queryBuilder.getMeta()
+    // const [data, meta] = await Promise.all([
+    //     tours.build(),
+    //     queryBuilder.getMeta()
+    // ])
 
     return {
-        data,
-        meta
+        data: tours,
+        meta: {
+            total: totalTours
+        }
     }
+
+
+    // return {
+    //     data,
+    //     meta
+    // }
 }
 
 
@@ -135,13 +144,19 @@ const deleteTour = async (id: string) => {
     
     
 }
+
+
+
+// Tour Type Section
 const createTourType = async (payload: ITourType) => {
     const existingTourType = await TourType.findOne({name: payload.name});
     if (existingTourType) {
         throw new Error("Tour type already exists.")
     }
-    return await TourType.create({name})
+
+    return await TourType.create({name : payload.name})
 }
+
 const getAllTourTypes = async () => {
     return await TourType.find()
 }
