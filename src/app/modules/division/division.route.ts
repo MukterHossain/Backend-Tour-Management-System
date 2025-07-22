@@ -18,4 +18,4 @@ router.delete("/:id",  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),  DivisionControl
 
 
 
-export const UserRoutes = router
+export const DivisionRoutes = router
