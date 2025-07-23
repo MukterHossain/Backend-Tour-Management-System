@@ -1,3 +1,5 @@
+// import { QueryBuilder } from "../../utils/QueryBuilder";
+// import { divisionSearchableFields } from "./division.constant";
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
 
@@ -20,9 +22,28 @@ const createDivision = async (payload: IDivision) => {
     return division
 }
 
-const getAllDivision = async () => {
+const getAllDivisions = async () => {
     const divisions = await Division.findOne({})
     const totalDivisions = await Division.countDocuments()
+
+    // const queryBuilder = new QueryBuilder(Division.find(), query)
+    // const divisionData = queryBuilder
+    // .search(divisionSearchableFields)
+    // .filter()
+    // .sort()
+    // .fields()
+    // .paginate()
+
+    // const [data, meta] = await Promise.all([
+    //     divisionData.build(),
+    //     queryBuilder.getMeta()
+    // ])
+    // return {
+    //     data,
+    //     meta
+    // }
+    
+    
     return {
         data: divisions,
         meta: {
@@ -76,7 +97,7 @@ const deleteDivision = async (id: string) => {
 
 export const DivisionService = {
     createDivision,
-    getAllDivision,
+    getAllDivisions,
     getSingleDivision,
     updateDivision,
     deleteDivision
