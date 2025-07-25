@@ -3,7 +3,7 @@ import passport from "passport";
 import { Strategy as GoogleStratery, Profile, VerifyCallback } from "passport-google-oauth20";
 import { envVars } from "./env";
 import { User } from "../modules/user/user.model";
-import { Role } from "../modules/user/user.interface";
+import { IsActive, Role } from "../modules/user/user.interface";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcryptjs from "bcryptjs"
 
@@ -21,17 +21,32 @@ passport.use(
             if (!isUserExist) {
                 return done("User  does not Exist")
             }
+            if (!isUserExist.isVarified) {
+                // throw new AppError(httpStatus.BAD_REQUEST, "User is not deleted")
+                done("User is not deleted")
+            }
+            if (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE) {
+                // throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
+                done(`User is ${isUserExist.isActive}`)
+            }
+            if (isUserExist.isDeleted) {
+                // throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
+                done("User is deleted")
+            }
+
+
+
             const isGoogleAuthenticated = isUserExist.auths.some(providerObjects => providerObjects.provider === "google")
             // if(isGoogleAuthenticated){
             //     return done(null, false, {message: "You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password."})
             // }
-            if(isGoogleAuthenticated && !isUserExist.password){
+            if (isGoogleAuthenticated && !isUserExist.password) {
                 return done("You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password.")
             }
 
             const isPasswordMatched = await bcryptjs.compare(password as string, isUserExist.password as string)
             if (!isPasswordMatched) {
-                return done(null, false, {message: "Password does not match"})
+                return done(null, false, { message: "Password does not match" })
             }
 
             return done(null, isUserExist)
@@ -56,9 +71,21 @@ passport.use(
                 if (!email) {
                     return done(null, false, { message: "No email found" })
                 }
-                let user = await User.findOne({ email })
-                if (!user) {
-                    user = await User.create({
+                let isUserExist = await User.findOne({ email })
+                if (isUserExist && !isUserExist.isVarified) {
+                    // throw new AppError(httpStatus.BAD_REQUEST, "User is not deleted")
+                    return done(null, false, {message: "user is not verified"})
+                }
+                if (isUserExist && (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE)) {
+                    // throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
+                    done(`User is ${isUserExist.isActive}`)
+                }
+                if (isUserExist && isUserExist.isDeleted) {
+                    // throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
+                     return done(null, false, { message: "User is deleted" })
+                }
+                if (!isUserExist) {
+                    isUserExist = await User.create({
                         email,
                         name: profile.displayName,
                         picture: profile.photos?.[0].value,
@@ -72,7 +99,7 @@ passport.use(
                         ]
                     })
                 }
-                return done(null, user)
+                return done(null, isUserExist)
             } catch (error) {
                 console.log("Google Strategy Error", error)
                 return done(error)

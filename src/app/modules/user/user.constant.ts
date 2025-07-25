@@ -1,0 +1,1 @@
+export const tourSearchableFields = ["name", "email", "address"]
