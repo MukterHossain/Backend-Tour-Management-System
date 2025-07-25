@@ -62,6 +62,20 @@ const updateUser = async(userId: string, payload: Partial<IUser>, decodedToken: 
 
 
 
+const getSingleUser = async (id:string) => {
+    const user = await User.findById(id).select("-password")
+
+    return {
+        data: user
+    }
+}
+const getMe = async (userId:string) => {
+    const user = await User.findById(userId).select("-password")
+
+    return {
+        data: user
+    }
+}
 const getAllUsers = async () => {
     const users = await User.find({})
     const totalUsers = await User.countDocuments()
@@ -78,5 +92,7 @@ const getAllUsers = async () => {
 export const userService = {
     createUser,
     getAllUsers,
-    updateUser
+    getSingleUser,
+    updateUser,
+    getMe
 }

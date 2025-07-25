@@ -2,10 +2,21 @@ import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { DivisionService } from "./division.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { IDivision } from "./division.interface";
 
 
 const createDivision = catchAsync(async(req:Request, res:Response)=>{
-    const result = await DivisionService.createDivision(req.body)
+    
+    // console.log({
+    //     file: req.file,
+    //     body: req.body
+    // })
+    const payload: IDivision = {
+        ...req.body,
+        thumbnail: req.file?.path
+    }
+    const result = await DivisionService.createDivision(payload)
+    // const result = await DivisionService.createDivision(req.body)
 
      sendResponse(res, {
             success: true,
@@ -15,7 +26,7 @@ const createDivision = catchAsync(async(req:Request, res:Response)=>{
         })
 })
 const getAllDivisions = catchAsync(async(req:Request, res:Response)=>{
-    const result = await DivisionService.getAllDivision()
+    const result = await DivisionService.getAllDivisions()
 
      sendResponse(res, {
             success: true,
@@ -38,7 +49,11 @@ const getSingleDivision = catchAsync(async(req:Request, res:Response)=>{
 })
 const updateDivision = catchAsync(async(req:Request, res:Response)=>{
     const id = req.params.id
-    const result = await DivisionService.updateDivision(id, req.body)
+    const payload: IDivision = {
+        ...req.body,
+        thumbnail: req.file?.path
+    }
+    const result = await DivisionService.updateDivision(id, payload)
 
      sendResponse(res, {
             success: true,

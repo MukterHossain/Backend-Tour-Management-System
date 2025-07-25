@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import AppError from "../../errorHelpers/AppError";
+import { getTransactionId } from "../../utils/getTransactionId";
 import { PAYMENT_STATUS } from "../payment/payment.interface";
 import { Payment } from "../payment/payment.model";
 import { ISSLCommerz } from "../sslCommerz/sslCommerz.interface";
@@ -12,9 +13,9 @@ import { Booking } from "./booking.model";
 import httpStatus from "http-status-codes"
 
 
-const getTransactionId = () => {
-    return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
-}
+// const getTransactionId = () => { 
+//     return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
+// }
 
 const createBooking = async (payload: Partial<IBooking>, userId: string) => {
     const transactionId = getTransactionId()
