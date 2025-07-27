@@ -39,7 +39,7 @@ const sendOTP = async (email: string, name: string) => {
       templateName: "otp",
       templateData: {
          name: name,
-         otp: otp
+         otp: otp,
       }
    })
 }
@@ -50,7 +50,7 @@ const verifyOTP = async (email: string, otp: string) => {
     throw new AppError(404, "User not found")
    }
    if(user.isVarified){
-    throw new AppError(401, "Your are already verified")
+    throw new AppError(401, "You are already verified")
    }
    const redisKey = `otp:${email}`
    const saveOtp = await redisClient.get(redisKey)
