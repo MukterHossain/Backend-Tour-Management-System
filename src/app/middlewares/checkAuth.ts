@@ -29,8 +29,10 @@ try {
         throw new AppError(httpStatus.BAD_REQUEST, "User does not Exist")
     }
     if (!isUserExist.isVarified) {
-        throw new AppError(httpStatus.BAD_REQUEST, "User is not deleted")
+        throw new AppError(httpStatus.BAD_REQUEST, "User is not verified")
     }
+    console.log("IsActive", isUserExist.isActive)
+    console.log(isUserExist)
     if (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE) {
         throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
     }
