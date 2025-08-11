@@ -19,7 +19,7 @@ passport.use(
             //     return done(null, false, {message: "User  does not Exist"})
             // }
             if (!isUserExist) {
-                return done("User  does not Exist")
+                return done(null, false, {message: "User  does not Exist"})
             }
             if (!isUserExist.isVarified) {
                 // throw new AppError(httpStatus.BAD_REQUEST, "User is not deleted")
@@ -27,11 +27,12 @@ passport.use(
             }
             if (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE) {
                 // throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
-                done(`User is ${isUserExist.isActive}`)
+                return done(null, false, {message: `User is ${isUserExist.isActive}`})
             }
             if (isUserExist.isDeleted) {
                 // throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
-                done("User is deleted")
+                // done("")
+                return done(null, false, {message: "User is deleted"})
             }
 
 
@@ -41,7 +42,8 @@ passport.use(
             //     return done(null, false, {message: "You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password."})
             // }
             if (isGoogleAuthenticated && !isUserExist.password) {
-                return done("You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password.")
+                // return done("You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password.")
+                return done(null, false, {message: "You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password."})
             }
 
             const isPasswordMatched = await bcryptjs.compare(password as string, isUserExist.password as string)
@@ -78,7 +80,8 @@ passport.use(
                 }
                 if (isUserExist && (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE)) {
                     // throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
-                    done(`User is ${isUserExist.isActive}`)
+                    // done()
+                    return done(null, false, {message: `User is ${isUserExist.isActive}`})
                 }
                 if (isUserExist && isUserExist.isDeleted) {
                     // throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
