@@ -19,7 +19,7 @@ passport.use(
             //     return done(null, false, {message: "User  does not Exist"})
             // }
             if (!isUserExist) {
-                return done(null, false, {message: "User  does not Exist"})
+                return done(null, false, {message: "User does not Exist"})
             }
             if (!isUserExist.isVarified) {
                 // throw new AppError(httpStatus.BAD_REQUEST, "User is not deleted")
@@ -76,7 +76,7 @@ passport.use(
                 let isUserExist = await User.findOne({ email })
                 if (isUserExist && !isUserExist.isVarified) {
                     // throw new AppError(httpStatus.BAD_REQUEST, "User is not deleted")
-                    return done(null, false, {message: "user is not verified"})
+                    return done(null, false, {message: "User is not verified"})
                 }
                 if (isUserExist && (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE)) {
                     // throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
